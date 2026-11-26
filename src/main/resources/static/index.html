@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StationeryStore</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="main">
+        <header class="header-site">
+            <div class="header-row">
+                <nav class="header-links">
+                    <a class="brand" href="/">StationeryStore</a>
+                    <a href="/">Trang Chủ</a>
+                </nav>
+                <form role="search" id="search-form">
+                    <label class="sr-only" for="search-input">Tìm kiếm</label>
+                    <div class="search-field">
+                        <input type="search" name="keyword" id="search-input" autocomplete="off" placeholder="Nhập tên sản phẩm">
+                        <button type="submit" id="search-submit">Tìm</button>
+                    </div>
+                    <ul id="suggestions" hidden="hidden"></ul>
+                </form>
+                <div class="header-links">
+                    <span>Tài khoản</span>
+                    <span>Đơn mua</span>
+                </div>
+            </div>
+        </header>
+        <section class="hero-banner">
+            <img src="./Images/pic1.jpg" alt="Ảnh thiên nhiên" >
+            <img src="./Images/pic2.jpg" alt="Ảnh thiên nhiên" hidden>
+        </section>
+        <section class="categories bordered">
+            <h2>Danh mục</h2>
+            <ul>
+                <li>
+                    <img src="./Images/pic1.jpg" alt="ảnh">
+                    <span>Sách giáo khoa</span>
+                </li>
+                <li>
+                    <img src="./Images/pic2.jpg" alt="" >
+                    <span>Thước kẻ</span>
+                </li>
+            </ul>
+        </section>
+        <section>
+            <h2>Sản phẩm</h2>
+            <div class="product-grid">
+            </div>
+            <nav class="product-pagination">
+                <button type="button" id="previous-page">Trang Trước</button>
+                <p id="page-info">Đang tải</p>
+                <button type="button"  id="next-page">Trang Sau</button>
+            </nav>
+        </section>
+    </div>
+</body>
+</html>

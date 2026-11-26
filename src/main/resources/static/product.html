@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>StationeryStore</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/product.css">
+    <script src="/product.js" defer ></script>
+</head>
+<body>
+    <div class="main">
+        <header class="header-site">
+            <div class="header-row">
+                <nav class="header-links">
+                    <a class="brand" href="/">StationeryStore</a>
+                    <a href="/">Trang Chủ</a>
+                </nav>
+                <form role="search" id="search-form" action="/" method="get">
+                    <label class="sr-only" for="search-input">Tìm kiếm</label>
+                    <div class="search-field">
+                        <input type="search" name="keyword" id="search-input" autocomplete="off" placeholder="Nhập tên sản phẩm">
+                        <button type="submit" id="search-submit">Tìm</button>
+                    </div>
+                    <ul id="suggestions" hidden="hidden"></ul>
+                </form>
+                <div class="header-links">
+                    <span>Tài khoản</span>
+                    <span>Đơn mua</span>
+                </div>
+            </div>
+        </header>
+        <div class="product-details">
+            <div class="image">
+                <div class="product-image">
+                    <img src="/Images/pic2.jpg" alt="">
+                </div>
+                <ul class="variant-image">
+                    <li>
+                        <img src="" alt="variants-image1">
+                    </li>
+                </ul>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Sản phẩm A</h3>
+                <p class="product-description">mô tả</p>
+                <div class="product-rating">
+                    <p></p>
+                </div>
+                <div class="product-price"></div>
+                <div class="choose-variant">
+                    <ul class="product-variants">
+                        <li> đỏ - Tồn kho 6</li>
+                        <li> đen - Tồn kho 6</li>
+                        <li> xanh - tồn kho 20</li>
+                    </ul>
+                </div>
+                <div class="amount">
+                    <p>Số lượng</p>
+                    <button type="button" id="quantity-minus">-</button>
+                    <span id="quantity-value">6</span>
+                    <button type="button" id="quantity-plus">+</button>
+                </div>
+                <div class="decision">
+                    <button type="button">Thêm vào giỏ hàng</button>
+                    <button type="button" id="buy-now">Mua ngay</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

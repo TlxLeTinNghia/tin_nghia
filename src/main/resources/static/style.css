@@ -1,0 +1,98 @@
+:root{
+    --xanh-nhat:#e9f3ed;
+}
+.bordered{
+    border-radius: 12px;
+    border: 1px solid #111;
+}
+.header-row{
+    display: flex;
+    align-items: center;
+    gap: 20px; /*gap là tạo khoảng cách giữa các phần tử giữa các phần tử con bên trong phần tử cha*/
+    flex-wrap: wrap; /*cho phép các phần tử con xuống hàng khi không đủ chỗ*/
+}
+.header-links{
+    display:flex;
+    align-items: center;
+    gap: 12px;
+}
+.header-row #search-form{
+    flex: 1 1 280px; /*số 1 đầu tiên cho phép các phần tử giãn ra khi phóng to , số 1 thứ cho phép các phàn tủ co lại khi thu nhỏ*/
+    width:auto;
+    margin: 0;
+}
+.search-field{
+    display: flex;
+}
+.search-field input{
+    flex: 1 ;
+    min-width: 0;
+}
+.hero-banner{
+    max-width: 1100px;
+    margin: 20px auto;
+}
+.hero-banner img{
+    display: block; /*Xuống hàng và chiếm hết hàng đó */
+    height: 70px;
+    width: 100% ;
+    object-fit:fill;
+}
+.hero-banner img[hidden]{
+     display: none;
+}
+/*.categories ul{*/
+/*    display: flex;*/
+/*    gap: 12px;*/
+/*    list-style: none;*/
+/*    padding-inline-start: 0;*/
+/*}*/
+.categories li{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #111111;
+}
+.categories li img{
+    height: 72px;
+    width: 72px;
+    object-fit: contain;
+}
+
+.categories ul{
+    display: grid;
+    grid-template-columns: repeat(6,130px);
+    grid-template-rows: repeat(2 , 150px);
+    gap: 0;
+    padding: 0;
+    list-style: none;
+}
+.product-grid{
+    display: grid;
+    grid-template-columns: repeat(4 , minmax(0 ,1fr));
+    gap:16px;
+    border: 1px solid #111111;
+    padding: 16px;
+}
+.product-grid article{
+    border: 1px solid #111111;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 0px;
+    gap: 10px;
+}
+.product-grid article img{
+    height: 500px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #111111;
+    object-fit: cover;
+}
+.product-pagination{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+}
