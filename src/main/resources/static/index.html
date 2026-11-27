@@ -3,59 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>StationeryStore</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js" defer></script>
+    <title>StationeryStore | Văn phòng phẩm</title>
+    <link rel="stylesheet" href="/style.css?v=aae65435">
+    <script src="/app.js?v=eb4b030c" defer></script>
 </head>
-<body>
-    <div class="main">
-        <header class="header-site">
-            <div class="header-row">
-                <nav class="header-links">
-                    <a class="brand" href="/">StationeryStore</a>
-                    <a href="/">Trang Chủ</a>
-                </nav>
-                <form role="search" id="search-form">
-                    <label class="sr-only" for="search-input">Tìm kiếm</label>
-                    <div class="search-field">
-                        <input type="search" name="keyword" id="search-input" autocomplete="off" placeholder="Nhập tên sản phẩm">
-                        <button type="submit" id="search-submit">Tìm</button>
-                    </div>
-                    <ul id="suggestions" hidden="hidden"></ul>
-                </form>
-                <div class="header-links">
-                    <span>Tài khoản</span>
-                    <span>Đơn mua</span>
+<body class="storefront">
+    <header class="store-header">
+        <div class="store-header-inner store-container">
+            <a class="store-brand" href="/" aria-label="StationeryStore, trang chủ">
+                <span aria-hidden="true">✎</span> StationeryStore
+            </a>
+            <form id="search-form" class="store-search" role="search" action="/" method="get">
+                <label class="store-visually-hidden" for="search-input">Tìm sản phẩm</label>
+                <div class="store-search-field">
+                    <input type="search" name="keyword" id="search-input" autocomplete="off"
+                           placeholder="Tìm bút, thước kẻ, sách giáo khoa…">
+                    <button type="submit">Tìm kiếm</button>
                 </div>
+                <ul id="suggestions" class="store-suggestions" aria-label="Gợi ý tìm kiếm" hidden></ul>
+            </form>
+            <nav class="store-nav" aria-label="Điều hướng chính">
+                <a href="/">Trang chủ</a>
+                <a href="/login.html">Tài khoản</a>
+                <span class="store-nav-unavailable" aria-disabled="true">Đơn mua</span>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container store-content">
+        <section class="store-hero" aria-labelledby="store-heading">
+            <div class="store-hero-copy">
+                <h1 id="store-heading">Văn phòng phẩm <em>mỗi ngày</em></h1>
+                <a class="store-primary-link" href="#products">Xem sản phẩm <span aria-hidden="true">→</span></a>
             </div>
-        </header>
-        <section class="hero-banner">
-            <img src="./Images/pic1.jpg" alt="Ảnh thiên nhiên" >
-            <img src="./Images/pic2.jpg" alt="Ảnh thiên nhiên" hidden>
+            <div class="store-hero-media">
+                <img src="/Images/hero-stationery.jpg" alt="">
+                <img src="/Images/hero-school-supplies.jpg" alt="" hidden>
+            </div>
         </section>
-        <section class="categories bordered">
-            <h2>Danh mục</h2>
-            <ul>
+
+        <section class="store-categories" aria-labelledby="categories-heading">
+            <h2 id="categories-heading">Danh mục</h2>
+            <ul id="category-grid" class="store-category-grid">
                 <li>
-                    <img src="./Images/pic1.jpg" alt="ảnh">
-                    <span>Sách giáo khoa</span>
+                    <img class="store-category-image" src="/Images/default-stationery.jpg" alt="" width="56" height="56">
+                    Sách giáo khoa
                 </li>
                 <li>
-                    <img src="./Images/pic2.jpg" alt="" >
-                    <span>Thước kẻ</span>
+                    <img class="store-category-image" src="/Images/default-stationery.jpg" alt="" width="56" height="56">
+                    Thước kẻ
                 </li>
             </ul>
-        </section>
-        <section>
-            <h2>Sản phẩm</h2>
-            <div class="product-grid">
-            </div>
-            <nav class="product-pagination">
-                <button type="button" id="previous-page">Trang Trước</button>
-                <p id="page-info">Đang tải</p>
-                <button type="button"  id="next-page">Trang Sau</button>
+            <nav id="category-pagination" class="store-pagination" aria-label="Phân trang danh mục" hidden>
+                <button type="button" id="category-previous">Danh mục trước</button>
+                <button type="button" id="category-next">Danh mục sau</button>
             </nav>
         </section>
-    </div>
+
+        <section id="products" class="store-products" aria-labelledby="products-heading">
+            <h2 id="products-heading">Sản phẩm</h2>
+            <div id="product-grid" class="store-product-grid" aria-busy="true"></div>
+            <p id="product-status" class="store-product-status" role="status">Đang tải sản phẩm…</p>
+            <nav class="store-pagination" aria-label="Phân trang sản phẩm" hidden>
+                <button type="button" id="previous-page" disabled><span aria-hidden="true">‹</span> Trang trước</button>
+                <span id="page-info" aria-live="polite"></span>
+                <button type="button" id="next-page" disabled>Trang sau <span aria-hidden="true">›</span></button>
+            </nav>
+        </section>
+    </main>
 </body>
 </html>

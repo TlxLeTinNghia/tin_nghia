@@ -1,126 +1,234 @@
-const bannerImages = document.querySelectorAll(".hero-banner img");
-// id dùng # còn class thì dùng .
-const inputKeyword = document.getElementById("search-input");
-const nextPageButton = document.querySelector("#next-page");
-const previousPageButton = document.querySelector("#previous-page");
-const pageInfo = document.querySelector("#page-info");
-const searchForm = document.querySelector("#search-form");
+const bannerImages = document.querySelectorAll(".store-hero-media img");
+const searchForm = document.getElementById("search-form");
+const searchInput = document.getElementById("search-input");
 const suggestionList = document.getElementById("suggestions");
-let currentIndexBannerImage = 0;
+const productGrid = document.getElementById("product-grid");
+const productStatus = document.getElementById("product-status");
+const pagination = document.querySelector(".store-pagination");
+const previousPageButton = document.getElementById("previous-page");
+const nextPageButton = document.getElementById("next-page");
+const pageInfo = document.getElementById("page-info");
+
+const defaultImageUrl = "/Images/default-stationery.jpg";
+const productPageSize = 20;
+const ratingFormat = new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 1 });
 let currentProductPage = 0;
-let productPageSize = 2;
-let searchKeyword ="";
+let searchKeyword = (new URLSearchParams(window.location.search).get("keyword") ?? "").trim();
+let productRequest;
+let suggestionRequest;
 let suggestionTimer;
-if(bannerImages.length > 1){
-    setInterval(()=>{
-        bannerImages[currentIndexBannerImage].hidden = true;
-        currentIndexBannerImage = (currentIndexBannerImage +1)% bannerImages.length;
-        bannerImages[currentIndexBannerImage].hidden = false;
-    },3000)
+
+if (bannerImages.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    let currentBanner = 0;
+    setInterval(() => {
+        bannerImages[currentBanner].hidden = true;
+        currentBanner = (currentBanner + 1) % bannerImages.length;
+        bannerImages[currentBanner].hidden = false;
+    }, 3000);
 }
 
-async function loadProductPage(page){
-    try{
-        const params = new URLSearchParams({
-            page :page,
-            size : productPageSize,
-            keyword : searchKeyword
-        });
-        const response = await fetch(`/api/products?${params.toString()}`)
-        if(!response.ok){
-            throw new Error(`Không tải được sản phẩm(HTTP ${response.status}`);
-        }
-        const data = await response.json();
-        const products = data.content;
-        const productPage = document.querySelector(".product-grid");
-        productPage.replaceChildren();
-        for(const product of products){
-            const productName = document.createElement("h3");
-            productName.textContent = product.productName;
-            const description = document.createElement("p");
-            description.textContent = product.description;
-            const productRating = document.createElement("p");
-            productRating.textContent = product.reviewCount === 0 ? 'Chưa có đánh giá!' :
-                `${product.averageRating}/5 - ${product.reviewCount} lượt đánh giá`;
-            const card = document.createElement("article");
-            const img = document.createElement("img");
-            img.src = product.hasImage ? `/api/products/${product.productId}/image` : "/Images/pic2.jpg";
-            card.append(img, productName ,description , productRating );
-            productPage.append(card);
-            card.addEventListener("click",()=>{
-                window.location.href = `/product.html?id=${product.productId}`;
-            })
-        }
-        currentProductPage = data.page;
-        if(currentProductPage === 0)
-            previousPageButton.disabled = true;
-        else previousPageButton.disabled = false;
-        if(currentProductPage < (data.totalPages -1))
-            nextPageButton.disabled = false;
-        else nextPageButton.disabled = true;
-        pageInfo.textContent = (data.totalPages===0)?"Không có sản phẩm!":`Trang ${currentProductPage + 1} / ${data.totalPages}.`;
-        console.log(data);
+function setImageSource(image, imageUrl) {
+    if (imageUrl) {
+        image.addEventListener("error", () => {
+            image.src = defaultImageUrl;
+        }, { once: true });
+    }
+    image.src = imageUrl || defaultImageUrl;
+}
 
-    }catch (error){
-        console.error(error);
+for (const image of bannerImages) {
+    if (image.complete && image.naturalWidth === 0) {
+        image.src = defaultImageUrl;
+    } else {
+        image.addEventListener("error", () => { image.src = defaultImageUrl; }, { once: true });
     }
 }
 
-async function loadSuggestion(keyword){
-    try{
-        const params = new URLSearchParams({
-            keyword : keyword
-        });
-        const response = await fetch(`/api/products/suggestions?${params.toString()}`);
-        if(!response.ok){
-            throw new Error("Không lấy được gợi ý");
+function createProductCard(product) {
+    const card = document.createElement("article");
+    card.className = "store-product-card";
+
+    const link = document.createElement("a");
+    link.className = "store-product-link";
+    link.href = `/product.html?id=${encodeURIComponent(product.productId)}`;
+
+    const media = document.createElement("div");
+    media.className = "store-product-media";
+    const image = document.createElement("img");
+    image.alt = "";
+    image.loading = "lazy";
+    const imageUrl = product.hasImage ? `/api/products/${encodeURIComponent(product.productId)}/image` : null;
+    setImageSource(image, imageUrl);
+    media.append(image);
+
+    const copy = document.createElement("div");
+    copy.className = "store-product-copy";
+
+    const name = document.createElement("h3");
+    name.textContent = product.productName;
+
+    const description = document.createElement("p");
+    description.textContent = product.description;
+
+    const rating = document.createElement("p");
+    rating.className = "store-product-rating";
+    rating.textContent = product.averageRating == null || product.reviewCount === 0
+        ? "Chưa có đánh giá"
+        : `${ratingFormat.format(product.averageRating)}/5 · ${product.reviewCount} lượt đánh giá`;
+
+    copy.append(name, description, rating);
+    link.append(media, copy);
+    card.append(link);
+    return card;
+}
+
+async function loadProductPage(page) {
+    productRequest?.abort();
+    const request = new AbortController();
+    productRequest = request;
+    productGrid.setAttribute("aria-busy", "true");
+    productGrid.replaceChildren();
+    pagination.hidden = true;
+    productStatus.textContent = "Đang tải sản phẩm…";
+    productStatus.hidden = false;
+
+    try {
+        const params = new URLSearchParams({ page, size: productPageSize, keyword: searchKeyword });
+        const response = await fetch(`/api/products?${params}`, { signal: request.signal });
+        if (!response.ok) {
+            throw new Error(`Không tải được sản phẩm (HTTP ${response.status})`);
         }
+
+        const data = await response.json();
+        if (request.signal.aborted) return;
+
+        productGrid.replaceChildren(...data.content.map(createProductCard));
+        currentProductPage = data.page;
+        productStatus.textContent = "Không tìm thấy sản phẩm.";
+        productStatus.hidden = data.content.length > 0;
+        previousPageButton.disabled = currentProductPage === 0;
+        nextPageButton.disabled = currentProductPage + 1 >= data.totalPages;
+        pageInfo.textContent = `Trang ${currentProductPage + 1} / ${data.totalPages}`;
+        pagination.hidden = data.totalPages < 2;
+    } catch (error) {
+        if (request.signal.aborted) return;
+        productStatus.textContent = "Không tải được sản phẩm. Bạn thử tải lại trang nhé.";
+        console.error(error);
+    } finally {
+        if (productRequest === request) productGrid.setAttribute("aria-busy", "false");
+    }
+}
+
+function closeSuggestions() {
+    clearTimeout(suggestionTimer);
+    suggestionRequest?.abort();
+    suggestionList.hidden = true;
+    suggestionList.replaceChildren();
+}
+
+async function loadSuggestions(keyword) {
+    const request = new AbortController();
+    suggestionRequest = request;
+
+    try {
+        const params = new URLSearchParams({ keyword });
+        const response = await fetch(`/api/products/suggestions?${params}`, { signal: request.signal });
+        if (!response.ok) throw new Error("Không lấy được gợi ý");
+
         const names = await response.json();
-        suggestionList.replaceChildren();
-        for(const name of names){
+        if (request.signal.aborted) return;
+
+        for (const name of names) {
             const item = document.createElement("li");
             const button = document.createElement("button");
             button.type = "button";
             button.textContent = name;
-            item.append(button);
-            button.addEventListener("click",()=>{
-                inputKeyword.value = button.textContent;
-                suggestionList.replaceChildren();
-                suggestionList.hidden = true;
+            button.addEventListener("click", () => {
+                searchInput.value = name;
+                searchInput.focus();
                 searchForm.requestSubmit();
             });
+            item.append(button);
             suggestionList.append(item);
         }
-        suggestionList.hidden = (names.length === 0);
-    }catch (error){
-        console.error(error);
+        suggestionList.hidden = names.length === 0;
+    } catch (error) {
+        if (!request.signal.aborted) console.error(error);
     }
 }
 
-previousPageButton.addEventListener("click",()=>{
-    loadProductPage(currentProductPage-1);
+previousPageButton.addEventListener("click", () => loadProductPage(currentProductPage - 1));
+nextPageButton.addEventListener("click", () => loadProductPage(currentProductPage + 1));
+
+searchInput.addEventListener("input", () => {
+    closeSuggestions();
+    const keyword = searchInput.value.trim();
+    if (keyword) suggestionTimer = setTimeout(() => loadSuggestions(keyword), 500);
 });
 
-nextPageButton.addEventListener("click" , ()=>{
-    loadProductPage(currentProductPage+1);
+searchForm.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !suggestionList.hidden) {
+        event.preventDefault();
+        closeSuggestions();
+        searchInput.focus();
+    }
 });
 
-searchForm.addEventListener("submit",(event)=>{
-    event.preventDefault(); // chặn cái hành động mặc định của button
-    searchKeyword = inputKeyword.value.trim();
+searchForm.addEventListener("focusout", (event) => {
+    if (!searchForm.contains(event.relatedTarget)) closeSuggestions();
+});
+
+searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    closeSuggestions();
+    searchKeyword = searchInput.value.trim();
     loadProductPage(0);
 });
 
-inputKeyword.addEventListener("input",()=>{
-    clearTimeout(suggestionTimer);
-    suggestionTimer = setTimeout(()=>{
-        console.log(inputKeyword.value.trim());
-        loadSuggestion(inputKeyword.value.trim());
-    },500)
-});
-
-const urlParams = new URLSearchParams(window.location.search);
-searchKeyword = (urlParams.get("keyword")??"").trim();
-inputKeyword.value = searchKeyword;
-
+searchInput.value = searchKeyword;
 loadProductPage(0);
+
+const categoryGrid = document.getElementById("category-grid");
+const categoryPagination = document.getElementById("category-pagination");
+const categoryPrevious = document.getElementById("category-previous");
+const categoryNext = document.getElementById("category-next");
+let currentCategoryPage = 0;
+let hasNextCategoryPage = false;
+
+function createCategoryCard(category) {
+    const item = document.createElement("li");
+    const image = document.createElement("img");
+    image.className = "store-category-image";
+    image.alt = "";
+    image.loading = "lazy";
+    image.width = 56;
+    image.height = 56;
+    const imageUrl = category.hasImage ? `/api/categories/${encodeURIComponent(category.categoryId)}/image` : null;
+    setImageSource(image, imageUrl);
+    item.append(image, category.categoryName);
+    return item;
+}
+
+async function loadCategoryPage(page) {
+    categoryPrevious.disabled = true;
+    categoryNext.disabled = true;
+    try {
+        const response = await fetch(`/api/categories?page=${page}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        categoryGrid.replaceChildren(...data.content.map(createCategoryCard));
+        currentCategoryPage = page;
+        hasNextCategoryPage = data.hasNext;
+        categoryPagination.hidden = page === 0 && !hasNextCategoryPage;
+    } catch (error) {
+        // Giữ danh mục đang hiển thị khi API tạm thời không phản hồi.
+        console.error("Không tải được danh mục", error);
+    } finally {
+        categoryPrevious.disabled = currentCategoryPage === 0;
+        categoryNext.disabled = !hasNextCategoryPage;
+    }
+}
+
+categoryPrevious.addEventListener("click", () => loadCategoryPage(currentCategoryPage - 1));
+categoryNext.addEventListener("click", () => loadCategoryPage(currentCategoryPage + 1));
+loadCategoryPage(0);

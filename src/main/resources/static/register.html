@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng Ký</title>
+    <link rel="stylesheet" href="./login.css">
+</head>
+<body>
+<main>
+    <h1>Tạo tài khoản</h1>
+
+    <form id="register-form" method="post">
+        <label for="register-username">Tên đăng nhập</label>
+        <input id="register-username" name="userName"
+               autocomplete="username" required>
+
+        <label for="register-password">Mật khẩu</label>
+        <input id="register-password" name="password" type="password"
+               autocomplete="new-password" required>
+
+        <label for="register-confirm-password">Nhập lại mật khẩu</label>
+        <input id="register-confirm-password" name="confirmPassword" type="password"
+               autocomplete="new-password" required>
+
+        <button type="submit" disabled>Đăng ký</button>
+    </form>
+
+    <p class="register-prompt">
+        Đã có tài khoản?
+        <a class="register-link" href="/login.html">Đăng nhập</a>
+    </p>
+</main>
+</body>
+</html>
