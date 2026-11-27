@@ -1,73 +1,76 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>StationeryStore</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="/product.css">
-    <script src="/product.js" defer ></script>
+    <title>Sản phẩm | StationeryStore</title>
+    <link rel="stylesheet" href="/style.css?v=aae65435">
+    <link rel="stylesheet" href="/product.css?v=76f0d349">
+    <script src="/product.js?v=ed7968d2" defer></script>
 </head>
-<body>
-    <div class="main">
-        <header class="header-site">
-            <div class="header-row">
-                <nav class="header-links">
-                    <a class="brand" href="/">StationeryStore</a>
-                    <a href="/">Trang Chủ</a>
-                </nav>
-                <form role="search" id="search-form" action="/" method="get">
-                    <label class="sr-only" for="search-input">Tìm kiếm</label>
-                    <div class="search-field">
-                        <input type="search" name="keyword" id="search-input" autocomplete="off" placeholder="Nhập tên sản phẩm">
-                        <button type="submit" id="search-submit">Tìm</button>
-                    </div>
-                    <ul id="suggestions" hidden="hidden"></ul>
-                </form>
-                <div class="header-links">
-                    <span>Tài khoản</span>
-                    <span>Đơn mua</span>
+<body class="storefront product-page">
+    <header class="store-header">
+        <div class="store-header-inner store-container">
+            <a class="store-brand" href="/" aria-label="StationeryStore, trang chủ">
+                <span aria-hidden="true">✎</span> StationeryStore
+            </a>
+            <form class="store-search" role="search" action="/" method="get">
+                <label class="store-visually-hidden" for="search-input">Tìm sản phẩm</label>
+                <div class="store-search-field">
+                    <input type="search" name="keyword" id="search-input" placeholder="Tìm bút, thước kẻ, sách giáo khoa…">
+                    <button type="submit">Tìm kiếm</button>
                 </div>
-            </div>
-        </header>
-        <div class="product-details">
-            <div class="image">
-                <div class="product-image">
-                    <img src="/Images/pic2.jpg" alt="">
-                </div>
-                <ul class="variant-image">
-                    <li>
-                        <img src="" alt="variants-image1">
-                    </li>
-                </ul>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">Sản phẩm A</h3>
-                <p class="product-description">mô tả</p>
-                <div class="product-rating">
-                    <p></p>
-                </div>
-                <div class="product-price"></div>
-                <div class="choose-variant">
-                    <ul class="product-variants">
-                        <li> đỏ - Tồn kho 6</li>
-                        <li> đen - Tồn kho 6</li>
-                        <li> xanh - tồn kho 20</li>
-                    </ul>
-                </div>
-                <div class="amount">
-                    <p>Số lượng</p>
-                    <button type="button" id="quantity-minus">-</button>
-                    <span id="quantity-value">6</span>
-                    <button type="button" id="quantity-plus">+</button>
-                </div>
-                <div class="decision">
-                    <button type="button">Thêm vào giỏ hàng</button>
-                    <button type="button" id="buy-now">Mua ngay</button>
-                </div>
-            </div>
+            </form>
+            <nav class="store-nav" aria-label="Điều hướng chính">
+                <a href="/">Trang chủ</a>
+                <a href="/login.html">Tài khoản</a>
+                <span class="store-nav-unavailable" aria-disabled="true">Đơn mua</span>
+            </nav>
         </div>
+    </header>
 
-    </div>
+    <main class="store-container product-main">
+        <a class="product-back-link" href="/#products">← Về danh sách sản phẩm</a>
+        <p id="product-status" role="status">Đang tải sản phẩm…</p>
+        <article id="product-detail" class="product-detail" aria-labelledby="product-name" hidden>
+            <section class="product-gallery" aria-label="Ảnh sản phẩm">
+                <div class="product-gallery-preview">
+                    <img id="product-main-image" src="/Images/default-stationery.jpg" alt="">
+                </div>
+                <ul id="product-thumbnails" class="product-thumbnails" aria-label="Chọn ảnh sản phẩm"></ul>
+                <button id="gallery-autoplay" class="gallery-autoplay" type="button" hidden>Tạm dừng trình chiếu</button>
+            </section>
+
+            <div class="product-info">
+                <h1 id="product-name"></h1>
+                <p id="product-rating" class="product-rating"></p>
+                <p id="product-description" class="product-description"></p>
+                <div class="product-pricing" aria-live="polite">
+                    <del id="product-original-price" hidden></del>
+                    <span id="product-discount" hidden></span>
+                    <strong id="product-unit-price">Chọn phân loại để xem giá</strong>
+                    <p id="product-total" hidden></p>
+                </div>
+
+                <h2 id="variant-heading">Phân loại</h2>
+                <ul id="product-variants" class="product-variants" aria-labelledby="variant-heading"></ul>
+                <p id="variant-status" role="status" hidden></p>
+
+                <div class="product-quantity" role="group" aria-label="Số lượng">
+                    <span>Số lượng</span>
+                    <div class="quantity-stepper">
+                        <button type="button" id="quantity-minus" aria-label="Giảm số lượng" disabled>−</button>
+                        <output id="quantity-value">1</output>
+                        <button type="button" id="quantity-plus" aria-label="Tăng số lượng" disabled>+</button>
+                    </div>
+                </div>
+                <div class="product-actions">
+                    <button class="product-cart" type="button" disabled>Thêm vào giỏ hàng</button>
+                    <button class="product-buy" type="button" id="buy-now" disabled>Mua ngay</button>
+                </div>
+                <p id="order-status" role="status" hidden></p>
+            </div>
+        </article>
+    </main>
 </body>
 </html>
