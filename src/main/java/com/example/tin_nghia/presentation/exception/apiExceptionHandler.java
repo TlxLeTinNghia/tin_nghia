@@ -2,6 +2,7 @@ package com.example.tin_nghia.presentation.exception;
 
 import com.example.tin_nghia.application.exception.InsufficientStockException;
 import com.example.tin_nghia.application.exception.ProductNotFoundException;
+import com.example.tin_nghia.application.exception.UserNameAlreadyExistsException;
 import com.example.tin_nghia.application.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +29,9 @@ public class apiExceptionHandler {
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<Map<String , String>> handlerInsufficientStockException(InsufficientStockException exception){
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", exception.getMessage()));
+    }
+    @ExceptionHandler(UserNameAlreadyExistsException.class)
+    public ResponseEntity<Map<String,String>> handlerUserNameAlreadyExistsException(UserNameAlreadyExistsException exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message",exception.getMessage()));
     }
 }

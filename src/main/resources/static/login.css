@@ -55,14 +55,36 @@ h1 {
     background: #2fabff;
 }
 
-#login-message {
+.auth-message {
     margin: 0;
+    color: #495b53;
     text-align: center;
+    font-size: .9rem;
+    overflow-wrap: anywhere;
 }
 
-#login-message:empty {
+.auth-message:empty {
     margin-top: -10px;
 }
+
+.auth-message:not(:empty) {
+    padding: 9px 12px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+}
+
+.auth-message[data-state="error"] {
+    color: #734009;
+    background-color: #fff3dc;
+    border-color: #efd1a0;
+}
+
+.auth-message[data-state="success"] {
+    color: #1e583c;
+    background-color: #e9f3ed;
+    border-color: #c7dfce;
+}
+
 .register-prompt {
     margin: 20px 0 0;
     text-align: center;
@@ -79,4 +101,65 @@ h1 {
 
 .register-link:hover {
     background: #e9f3ed;
+}
+
+/* Dùng dấu * cho ký tự che mật khẩu của trình duyệt. */
+@font-face {
+    font-family: "Password Mask";
+    src: url("/password-mask.ttf") format("truetype");
+    unicode-range: U+002A, U+2022, U+2219, U+25A0, U+25AA, U+25CF, U+25E6;
+}
+
+.password-field {
+    position: relative;
+    min-width: 0;
+}
+
+:is(#login-form, #register-form) .password-field input {
+    box-sizing: border-box;
+    width: 100%;
+    padding-inline-end: 54px;
+}
+
+:is(#login-form, #register-form) .password-field input[type="password"] {
+    font-family: "Password Mask", system-ui, sans-serif;
+}
+
+.password-field input::-ms-reveal {
+    display: none;
+}
+
+:is(#login-form, #register-form) .password-toggle {
+    position: absolute;
+    inset-inline-end: 5px;
+    inset-block: 5px;
+    width: 38px;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: transparent;
+    color: #1d2521;
+}
+
+:is(#login-form, #register-form) .password-toggle:hover {
+    background: #dbece1;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid #23553d;
+    outline-offset: -2px;
+}
+
+.password-eye {
+    width: 21px;
+    height: 21px;
+}
+
+.password-eye-slash {
+    display: none;
+}
+
+.password-toggle.is-revealed .password-eye-slash {
+    display: inline;
 }
