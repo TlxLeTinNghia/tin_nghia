@@ -10,12 +10,14 @@ loginForm.addEventListener("submit", async (event) => {
 
     const userName = usernameInput.value.trim();
     if (!userName) {
+        loginMessage.dataset.state = "error";
         loginMessage.textContent = "Bạn hãy nhập tên đăng nhập.";
         usernameInput.focus();
         return;
     }
 
     submitButton.disabled = true;
+    loginMessage.dataset.state = "pending";
     loginMessage.textContent = "Đang đăng nhập…";
 
     try {
@@ -27,19 +29,25 @@ loginForm.addEventListener("submit", async (event) => {
         });
 
         if (response.ok) {
+            loginMessage.dataset.state = "success";
+            loginMessage.textContent = "Đăng nhập thành công.";
+            await new Promise(resolve => setTimeout(resolve, 1000));
             window.location.replace("/");
             return;
         }
 
         if (response.status === 401) {
             const data = await response.json().catch(() => null);
+            loginMessage.dataset.state = "error";
             loginMessage.textContent = data?.message ?? "Tên đăng nhập hoặc mật khẩu không đúng.";
             passwordInput.focus();
             passwordInput.select();
         } else {
+            loginMessage.dataset.state = "error";
             loginMessage.textContent = "Chưa đăng nhập được. Bạn thử lại nhé.";
         }
     } catch (error) {
+        loginMessage.dataset.state = "error";
         loginMessage.textContent = "Không kết nối được máy chủ. Bạn thử lại nhé.";
     } finally {
         submitButton.disabled = false;

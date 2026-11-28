@@ -1,8 +1,10 @@
 package com.example.tin_nghia.infrastructure.persistence;
 
+import com.example.tin_nghia.application.exception.UserNameAlreadyExistsException;
 import com.example.tin_nghia.application.port.UserRepository;
 import com.example.tin_nghia.domain.Role;
 import com.example.tin_nghia.domain.User;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -27,5 +29,17 @@ public class JdbcUserRepository implements UserRepository {
                 rs.getString("PasswordHash"),
                 Role.valueOf(rs.getString("Role"))
         ),userName).stream().findFirst();
+    }
+    @Override
+    public void insert(String userName , String passwordHash){
+        String sql = """
+                insert into dbo.Users(UserName , PasswordHash , [Role]) values(?,?,?);
+                """;
+        try{
+            jdbcTemplate.update(sql,userName,passwordHash,Role.USER.name());
+        }catch (DuplicateKeyException ex){
+            throw  new UserNameAlreadyExistsException();
+        }
+
     }
 }

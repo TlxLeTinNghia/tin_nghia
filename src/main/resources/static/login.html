@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Đăng Nhập</title>
-    <link rel="stylesheet" href="/login.css">
-    <script src="/login.js?v=9b6f5a0e" defer></script>
+    <link rel="stylesheet" href="/login.css?v=544695ca">
+    <script src="/password-toggle.js?v=4e587fc5" defer></script>
+    <script src="/login.js?v=0203c9f7" defer></script>
 </head>
 <body>
 <main>
@@ -17,11 +18,20 @@
                autocomplete="username" required>
 
         <label for="login-password">Mật khẩu</label>
-        <input id="login-password" name="password" type="password"
-               autocomplete="current-password" required>
+        <div class="password-field">
+            <input id="login-password" name="password" type="password"
+                   autocomplete="current-password" required>
+            <button type="button" class="password-toggle" aria-controls="login-password" aria-label="Xem mật khẩu">
+                <svg class="password-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                    <path class="password-eye-slash" d="m3 3 18 18"/>
+                </svg>
+            </button>
+        </div>
 
         <button type="submit">Đăng nhập</button>
-        <p id="login-message" role="status"></p>
+        <p id="login-message" class="auth-message" role="status"></p>
     </form>
     <p class="register-prompt">
         Chưa có tài khoản?
