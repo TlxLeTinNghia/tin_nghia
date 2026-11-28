@@ -174,3 +174,63 @@
 @media (prefers-reduced-motion: reduce) {
     .store-product-card { transition: none; }
 }
+
+.store-account {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.store-account-name {
+    max-width: 15ch;
+    overflow: hidden;
+    color: #dfecdf;
+    font-weight: 650;
+    text-overflow: ellipsis;
+}
+
+.store-nav .store-account-logout {
+    padding: 4px 8px;
+    border: 1px solid #83a295;
+    border-radius: 7px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.store-account-logout:not(:disabled):hover {
+    background: #2b5747;
+}
+
+.store-account-logout:disabled {
+    opacity: .65;
+    cursor: wait;
+}
+
+.store-account-message { position: absolute; }
+
+.store-account-message:not(:empty) {
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 3;
+    width: max-content;
+    max-width: min(235px, calc(100vw - 32px));
+    padding: 8px 10px;
+    border: 1px solid #efd1a0;
+    border-radius: 8px;
+    background: #fff3dc;
+    color: #734009;
+    white-space: normal;
+}
+
+@media (max-width: 480px) {
+    .store-nav {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .store-account-name {
+        max-width: 12ch;
+    }
+}

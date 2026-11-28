@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quản lý sản phẩm | StationeryStore</title>
+    <link rel="stylesheet" href="/style.css?v=7547688e">
+    <link rel="stylesheet" href="/admin.css?v=335893cb">
+    <script src="/admin.js?v=c2a2822a" defer></script>
+</head>
+<body class="storefront">
+    <header class="store-header">
+        <div class="store-header-inner store-container">
+            <a class="store-brand" href="/"><span aria-hidden="true">✎</span> StationeryStore</a>
+            <nav class="store-nav admin-nav" aria-label="Điều hướng quản trị">
+                <a href="/">Trang chủ</a>
+                <a href="/admin.html" aria-current="page">Quản lý sản phẩm</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container store-content admin-main">
+        <h1>Quản lý sản phẩm</h1>
+        <p id="admin-access-message" class="admin-feedback" role="status">Đang kiểm tra quyền truy cập…</p>
+        <a id="admin-login" class="store-primary-link" href="/login.html?next=%2Fadmin.html" hidden>Đăng nhập</a>
+
+        <div id="admin-workspace" hidden>
+            <section class="admin-card admin-create-card" aria-labelledby="admin-create-title">
+                <h2 id="admin-create-title">Thêm sản phẩm</h2>
+                <form id="admin-create" class="admin-create">
+                    <fieldset id="admin-create-fields" disabled>
+                        <legend>Thông tin sản phẩm</legend>
+                        <label for="create-product-name">Tên sản phẩm</label>
+                        <input id="create-product-name" name="productName" maxlength="200" required>
+                        <label for="create-description">Mô tả</label>
+                        <textarea id="create-description" name="description" rows="3" required></textarea>
+                        <div class="admin-create-grid">
+                            <div>
+                                <label for="create-category">Danh mục</label>
+                                <select id="create-category" name="categoryId" required>
+                                    <option value="">Chọn danh mục</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="create-manufacturer">Hãng sản xuất</label>
+                                <select id="create-manufacturer" name="manufacturerId" required>
+                                    <option value="">Chọn hãng sản xuất</option>
+                                </select>
+                            </div>
+                        </div>
+                        <h3>Biến thể đầu tiên</h3>
+                        <label for="create-variant-name">Tên biến thể</label>
+                        <input id="create-variant-name" name="variantName" maxlength="200" required>
+                        <div class="admin-create-grid admin-create-numbers">
+                            <div>
+                                <label for="create-price">Đơn giá (₫)</label>
+                                <input id="create-price" name="unitPrice" type="number" min="0" step="0.001" inputmode="decimal" required>
+                            </div>
+                            <div>
+                                <label for="create-stock">Tồn kho</label>
+                                <input id="create-stock" name="unitsInStock" type="number" min="0" max="2147483647" step="1" inputmode="numeric" required>
+                            </div>
+                            <div>
+                                <label for="create-discount">Giảm giá (%)</label>
+                                <input id="create-discount" name="discountPercent" type="number" min="0" max="100" step="0.01" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+                        <button type="submit" class="store-primary-link">Tạo sản phẩm</button>
+                    </fieldset>
+                </form>
+                <p id="admin-create-message" class="admin-feedback" role="status"></p>
+                <a id="admin-created-product" class="admin-product-link" hidden>Xem sản phẩm vừa tạo ↗</a>
+            </section>
+            <section class="admin-card" aria-labelledby="admin-catalog-title">
+                <h2 id="admin-catalog-title">Ảnh sản phẩm và biến thể</h2>
+                <form id="admin-search" role="search" class="admin-search">
+                    <label class="store-visually-hidden" for="admin-keyword">Tên sản phẩm cần tìm</label>
+                    <input type="search" id="admin-keyword" placeholder="Nhập tên sản phẩm">
+                    <button class="store-primary-link" type="submit">Tìm kiếm</button>
+                </form>
+                <label for="admin-product">Sản phẩm</label>
+                <select id="admin-product" disabled>
+                    <option value="">Chọn sản phẩm</option>
+                </select>
+                <p id="admin-catalog-message" class="admin-feedback" role="status"></p>
+                <nav class="store-pagination admin-pagination" id="admin-pagination" aria-label="Phân trang sản phẩm" hidden>
+                    <button id="admin-previous" type="button">Trang trước</button>
+                    <span id="admin-page"></span>
+                    <button id="admin-next" type="button">Trang sau</button>
+                </nav>
+                <a id="admin-product-link" class="admin-product-link" hidden>Mở trang sản phẩm ↗</a>
+            </section>
+
+            <section id="admin-add-variant" class="admin-card admin-add-variant" aria-labelledby="admin-add-variant-title" hidden>
+                <h2 id="admin-add-variant-title">Thêm biến thể</h2>
+                <form id="admin-add-variant-form" class="admin-create">
+                    <fieldset>
+                        <legend id="admin-variant-product-name"></legend>
+                        <label for="add-variant-name">Tên biến thể</label>
+                        <input id="add-variant-name" name="variantName" maxlength="200" required>
+                        <div class="admin-create-grid admin-create-numbers">
+                            <div>
+                                <label for="add-variant-price">Đơn giá (₫)</label>
+                                <input id="add-variant-price" name="unitPrice" type="number" min="0" step="0.001" inputmode="decimal" required>
+                            </div>
+                            <div>
+                                <label for="add-variant-stock">Tồn kho</label>
+                                <input id="add-variant-stock" name="unitsInStock" type="number" min="0" max="2147483647" step="1" inputmode="numeric" required>
+                            </div>
+                            <div>
+                                <label for="add-variant-discount">Giảm giá (%)</label>
+                                <input id="add-variant-discount" name="discountPercent" type="number" min="0" max="100" step="0.01" value="0" inputmode="decimal">
+                            </div>
+                        </div>
+                        <button type="submit" class="store-primary-link">Lưu biến thể</button>
+                    </fieldset>
+                </form>
+                <p id="admin-add-variant-message" class="admin-feedback" role="status"></p>
+            </section>
+
+            <section id="admin-edit-variant" class="admin-card admin-add-variant" aria-labelledby="admin-edit-variant-title" hidden>
+                <h2 id="admin-edit-variant-title">Sửa biến thể</h2>
+                <label for="admin-edit-variant-select">Biến thể</label>
+                <select id="admin-edit-variant-select"></select>
+                <form id="admin-edit-variant-form" class="admin-create" hidden>
+                    <fieldset>
+                        <label for="edit-variant-name">Tên biến thể</label>
+                        <input id="edit-variant-name" name="variantName" maxlength="200" required>
+                        <div class="admin-create-grid admin-create-numbers">
+                            <div>
+                                <label for="edit-variant-price">Đơn giá (₫)</label>
+                                <input id="edit-variant-price" name="unitPrice" type="number" min="0" step="0.001" required>
+                            </div>
+                            <div>
+                                <label for="edit-variant-stock">Tồn kho</label>
+                                <input id="edit-variant-stock" name="unitsInStock" type="number" min="0" max="2147483647" step="1" required>
+                            </div>
+                            <div>
+                                <label for="edit-variant-discount">Giảm giá (%)</label>
+                                <input id="edit-variant-discount" name="discountPercent" type="number" min="0" max="100" step="0.01">
+                            </div>
+                        </div>
+                        <button type="submit" class="store-primary-link">Lưu thay đổi</button>
+                    </fieldset>
+                </form>
+                <p id="admin-edit-variant-message" class="admin-feedback" role="status"></p>
+                <button id="admin-edit-variant-reload" class="store-primary-link" type="button" hidden>Tải lại thông tin</button>
+            </section>
+
+            <div id="admin-image-panels" class="admin-panels" hidden>
+                <section class="admin-card" aria-labelledby="admin-main-image-title">
+                    <h2 id="admin-main-image-title">Ảnh chính</h2>
+                    <img id="admin-main-preview" class="admin-preview" src="/Images/default-stationery.jpg" alt="Ảnh chính của sản phẩm">
+                    <form id="admin-main-form" class="admin-upload">
+                        <fieldset>
+                            <label for="admin-main-file">Chọn ảnh chính</label>
+                            <input id="admin-main-file" name="file" type="file" accept="image/jpeg,image/png" required>
+                            <button class="store-primary-link" type="submit">Lưu ảnh chính</button>
+                        </fieldset>
+                    </form>
+                    <p id="admin-main-message" class="admin-feedback" role="status"></p>
+                </section>
+
+                <section class="admin-card" aria-labelledby="admin-variant-image-title">
+                    <h2 id="admin-variant-image-title">Ảnh biến thể</h2>
+                    <img id="admin-variant-preview" class="admin-preview" alt="Ảnh biến thể vừa tải lên" hidden>
+                    <p id="admin-no-variants" class="admin-feedback" hidden>Sản phẩm này chưa có biến thể.</p>
+                    <form id="admin-variant-form" class="admin-upload">
+                        <fieldset>
+                            <label for="admin-variant">Biến thể</label>
+                            <select id="admin-variant" required>
+                                <option value="">Chọn biến thể</option>
+                            </select>
+                            <label for="admin-position">Vị trí ảnh</label>
+                            <select id="admin-position" name="position" required>
+                                <option value="1">Ảnh 1</option>
+                                <option value="2">Ảnh 2</option>
+                                <option value="3">Ảnh 3</option>
+                            </select>
+                            <label for="admin-variant-file">Chọn ảnh biến thể</label>
+                            <input id="admin-variant-file" name="file" type="file" accept="image/jpeg,image/png" required>
+                            <button class="store-primary-link" type="submit">Thêm ảnh biến thể</button>
+                        </fieldset>
+                    </form>
+                    <p id="admin-variant-message" class="admin-feedback" role="status"></p>
+                </section>
+            </div>
+            <p class="admin-file-note">Ảnh JPEG hoặc PNG, tối đa 1 MB và 4096 px mỗi chiều.</p>
+        </div>
+    </main>
+</body>
+</html>

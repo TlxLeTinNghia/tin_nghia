@@ -2,11 +2,16 @@ package com.example.tin_nghia.infrastructure.persistence;
 
 import com.example.tin_nghia.application.dto.VariantImage;
 import com.example.tin_nghia.application.dto.VariantImages;
+import com.example.tin_nghia.application.exception.ProductNotFoundException;
+import com.example.tin_nghia.application.exception.ProductVariantNotFoundException;
+import com.example.tin_nghia.application.exception.VariantImagePositionAlreadyUsedException;
 import com.example.tin_nghia.application.port.ProductVariantRepository;
 import com.example.tin_nghia.domain.ProductVariant;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +86,47 @@ public class JdbcProductVariantRepository implements ProductVariantRepository {
                 rs.getInt("UnitsInStock"),
                 rs.getBigDecimal("Discount")
         ),variantId).stream().findFirst();
+    }
+    @Override
+    public int insertVariantImage(int variantId, byte[] data, String imageType, int position) {
+        String sql = """
+                INSERT INTO dbo.VariantImages (VariantID, Position, ImageType, ImageData)
+                OUTPUT INSERTED.ImageID
+                SELECT VariantID, ?, ?, ?
+                FROM dbo.ProductVariants
+                WHERE VariantID = ?;
+                """;
+        try {
+            return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("ImageID"), position, imageType, data, variantId)
+                    .stream().findFirst().orElseThrow(() -> new ProductVariantNotFoundException(variantId));
+        } catch (DuplicateKeyException ex) {
+            throw new VariantImagePositionAlreadyUsedException(variantId, position);
+        }
+    }
+
+    @Override
+    public int insert(int productId, String variantName, BigDecimal unitPrice, int unitsInStock, BigDecimal discount) {
+        String sql = """
+                INSERT INTO dbo.ProductVariants (ProductID, VariantName, UnitPrice, UnitsInStock, Discount)
+                OUTPUT INSERTED.VariantID
+                SELECT ProductID, ?, ?, ?, ?
+                FROM dbo.Products
+                WHERE ProductID = ?;
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("VariantID"), variantName, unitPrice, unitsInStock, discount, productId)
+                .stream().findFirst().orElseThrow(() -> new ProductNotFoundException(productId));
+    }
+
+    @Override
+    public boolean update(int productId, int variantId, String variantName, BigDecimal unitPrice,
+                          int unitsInStock, BigDecimal discount, int expectedUnitsInStock) {
+        String sql = """
+                UPDATE dbo.ProductVariants
+                SET VariantName = ?, UnitPrice = ?, UnitsInStock = ?, Discount = ?
+                WHERE ProductID = ? AND VariantID = ? AND UnitsInStock = ?;
+                """;
+        return jdbcTemplate.update(
+                sql, variantName, unitPrice, unitsInStock, discount, productId, variantId, expectedUnitsInStock
+        ) == 1;
     }
 }

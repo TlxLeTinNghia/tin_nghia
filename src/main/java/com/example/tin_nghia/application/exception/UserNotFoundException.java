@@ -4,4 +4,7 @@ public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(int userId , Throwable cause){
         super("Không tìm thấy người mua có mã "+userId +"."+cause);
     }
+    public UserNotFoundException(int userId){
+        super("Không tìm thấy người mua có mã "+userId);
+    }
 }

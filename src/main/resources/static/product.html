@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sản phẩm | StationeryStore</title>
-    <link rel="stylesheet" href="/style.css?v=aae65435">
+    <link rel="stylesheet" href="/style.css?v=7547688e">
     <link rel="stylesheet" href="/product.css?v=76f0d349">
-    <script src="/product.js?v=ed7968d2" defer></script>
+    <script src="/product.js?v=2ec37122" defer></script>
+    <script src="/account.js?v=bc262cb6" defer></script>
 </head>
 <body class="storefront product-page">
     <header class="store-header">
@@ -23,8 +24,14 @@
             </form>
             <nav class="store-nav" aria-label="Điều hướng chính">
                 <a href="/">Trang chủ</a>
-                <a href="/login.html">Tài khoản</a>
-                <span class="store-nav-unavailable" aria-disabled="true">Đơn mua</span>
+                <a class="store-admin-link" href="/admin.html" hidden>Quản lý sản phẩm</a>
+                <div class="store-account">
+                    <a class="store-account-login" href="/login.html">Đăng nhập</a>
+                    <span class="store-account-name" hidden></span>
+                    <button class="store-account-logout" type="button" hidden>Đăng xuất</button>
+                    <span class="store-account-message" role="status"></span>
+                </div>
+                <a href="/orders.html">Đơn mua</a>
             </nav>
         </div>
     </header>

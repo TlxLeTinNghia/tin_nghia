@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>StationeryStore | Văn phòng phẩm</title>
-    <link rel="stylesheet" href="/style.css?v=aae65435">
+    <link rel="stylesheet" href="/style.css?v=7547688e">
     <script src="/app.js?v=eb4b030c" defer></script>
+    <script src="/account.js?v=bc262cb6" defer></script>
 </head>
 <body class="storefront">
     <header class="store-header">
@@ -24,8 +25,14 @@
             </form>
             <nav class="store-nav" aria-label="Điều hướng chính">
                 <a href="/">Trang chủ</a>
-                <a href="/login.html">Tài khoản</a>
-                <span class="store-nav-unavailable" aria-disabled="true">Đơn mua</span>
+                <a class="store-admin-link" href="/admin.html" hidden>Quản lý sản phẩm</a>
+                <div class="store-account">
+                    <a class="store-account-login" href="/login.html">Đăng nhập</a>
+                    <span class="store-account-name" hidden></span>
+                    <button class="store-account-logout" type="button" hidden>Đăng xuất</button>
+                    <span class="store-account-message" role="status"></span>
+                </div>
+                <a href="/orders.html">Đơn mua</a>
             </nav>
         </div>
     </header>

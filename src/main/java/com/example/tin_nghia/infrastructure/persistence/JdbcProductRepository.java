@@ -2,6 +2,7 @@ package com.example.tin_nghia.infrastructure.persistence;
 
 import com.example.tin_nghia.application.port.ProductRepository;
 import com.example.tin_nghia.domain.Product;
+import com.example.tin_nghia.application.dto.CatalogOption;
 import com.example.tin_nghia.application.dto.ProductImage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -123,5 +124,42 @@ public class JdbcProductRepository implements ProductRepository {
                 rs.getInt("ReviewCount"),
                 rs.getBigDecimal("AverageRating")
         ),productID).stream().findFirst();
+    }
+
+    @Override
+    public boolean updateImage(int productId, byte[] data, String imageType) {
+        String sql = """
+                UPDATE dbo.Products
+                SET ImageData = ?, ImageType = ?
+                WHERE ProductID = ?;
+                """;
+        return jdbcTemplate.update(sql, data, imageType, productId) == 1;
+    }
+
+    @Override
+    public int insert(String name, String description, int categoryId, int manufacturerId) {
+        String sql = """
+                INSERT INTO dbo.Products (ProductName, [Description], CategoryID, ManufacturerID)
+                OUTPUT INSERTED.ProductID
+                SELECT ?, ?, c.CategoryID, m.ManufacturerID
+                FROM dbo.Categories AS c
+                CROSS JOIN dbo.Manufacturers AS m
+                WHERE c.CategoryID = ? AND m.ManufacturerID = ?;
+                """;
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("ProductID"), name, description, categoryId, manufacturerId)
+                .stream().findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Danh mục hoặc hãng sản xuất không tồn tại."));
+    }
+
+    @Override
+    public List<CatalogOption> findCategoryOptions() {
+        String sql = "SELECT CategoryID, CategoryName FROM dbo.Categories ORDER BY CategoryName, CategoryID";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new CatalogOption(rs.getInt("CategoryID"), rs.getString("CategoryName")));
+    }
+
+    @Override
+    public List<CatalogOption> findManufacturerOptions() {
+        String sql = "SELECT ManufacturerID, ManufacturerName FROM dbo.Manufacturers ORDER BY ManufacturerName, ManufacturerID";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new CatalogOption(rs.getInt("ManufacturerID"), rs.getString("ManufacturerName")));
     }
 }

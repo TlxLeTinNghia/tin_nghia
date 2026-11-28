@@ -8,6 +8,7 @@ import com.example.tin_nghia.application.service.GetProductService;
 import com.example.tin_nghia.application.service.GetProductSuggestionService;
 import com.example.tin_nghia.domain.Product;
 import com.example.tin_nghia.application.dto.ProductImage;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,6 +65,7 @@ public class ProductController {
 
         ProductImage productImage = image.get();
         return ResponseEntity.ok()
+                .cacheControl(CacheControl.noCache())
                 .contentType(MediaType.parseMediaType(productImage.getContentType()))
                 .body(productImage.getData());
     }

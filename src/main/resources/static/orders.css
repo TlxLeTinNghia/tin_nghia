@@ -1,0 +1,189 @@
+.store-nav [aria-current="page"] {
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+}
+
+.orders-main h1 {
+    margin: 0 0 18px;
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+    letter-spacing: -.035em;
+}
+
+.orders-panel {
+    overflow: hidden;
+    border: 1px solid var(--store-border);
+    border-radius: 16px;
+    background: white;
+}
+
+.orders-state {
+    padding: 34px 16px;
+    text-align: center;
+}
+
+.orders-state p {
+    margin: 0 0 12px;
+    color: var(--store-muted);
+}
+
+.orders-state p:last-child {
+    margin-bottom: 0;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: left;
+}
+
+.orders-table > :is(thead, tbody) > tr > th,
+.orders-table > tbody > tr > td {
+    padding: 13px clamp(8px, 3vw, 24px);
+    overflow-wrap: anywhere;
+}
+
+.orders-table > thead {
+    background: #e9f3ed;
+}
+
+.orders-table > tbody > tr + tr {
+    border-top: 1px solid var(--store-border);
+}
+
+.orders-table > tbody > tr:not(.order-detail-row):hover {
+    background: #f6f8f3;
+}
+
+.orders-table > thead > tr > th:last-child,
+.orders-table > tbody > tr > td:last-child {
+    text-align: right;
+}
+
+.order-number, .order-amount {
+    color: var(--store-green);
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+}
+
+.order-date time {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 480px) {
+    .orders-table {
+        font-size: .85rem;
+    }
+}
+
+.orders-table > thead th:first-child { width: 24%; }
+.orders-table > thead th:last-child { width: 28%; }
+
+.order-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    max-width: 100%;
+    padding: 5px 8px;
+    border: 1px solid var(--store-border);
+    border-radius: 8px;
+    background: white;
+    color: var(--store-green);
+    font-weight: inherit;
+    cursor: pointer;
+}
+
+.order-toggle:hover,
+.order-toggle[aria-expanded="true"] {
+    background: #e9f3ed;
+}
+
+.order-toggle-arrow {
+    width: .45em;
+    height: .45em;
+    margin-inline-end: 2px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+}
+
+.order-toggle[aria-expanded="true"] .order-toggle-arrow {
+    transform: rotate(225deg);
+}
+
+.orders-table > tbody > .order-detail-row > .order-detail-cell {
+    padding-top: 4px;
+    background: #f6f8f3;
+    text-align: left;
+}
+
+.order-detail-message {
+    margin: 8px 0 0;
+    color: var(--store-muted);
+}
+
+.order-detail-retry {
+    margin-top: 10px;
+}
+
+.order-items-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--store-border);
+    border-radius: 10px;
+    background: white;
+}
+
+.order-items {
+    width: 100%;
+    min-width: 350px;
+    border-collapse: collapse;
+}
+
+.order-items th,
+.order-items td {
+    padding: 10px clamp(8px, 2vw, 16px);
+    text-align: left;
+}
+
+.order-items thead th {
+    color: var(--store-muted);
+    font-weight: 600;
+}
+
+.order-items tbody th {
+    font-weight: 600;
+}
+
+.order-items :is(th, td):last-child {
+    text-align: right;
+}
+
+.order-items tfoot {
+    background: #e9f3ed;
+}
+
+.order-items tfoot th:first-child {
+    text-align: right;
+}
+
+.order-item-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-item-label img {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--store-border);
+    border-radius: 7px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.order-item-original {
+    display: block;
+    color: var(--store-muted);
+    font-size: .88em;
+}

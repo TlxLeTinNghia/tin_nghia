@@ -32,7 +32,8 @@ loginForm.addEventListener("submit", async (event) => {
             loginMessage.dataset.state = "success";
             loginMessage.textContent = "Đăng nhập thành công.";
             await new Promise(resolve => setTimeout(resolve, 1000));
-            window.location.replace("/");
+            const next = new URLSearchParams(window.location.search).get("next");
+            window.location.replace(["/orders.html", "/admin.html"].includes(next) ? next : "/");
             return;
         }
 

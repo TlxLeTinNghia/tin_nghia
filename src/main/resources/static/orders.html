@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đơn mua | StationeryStore</title>
+    <link rel="stylesheet" href="/style.css?v=7547688e">
+    <link rel="stylesheet" href="/orders.css?v=46459931">
+    <script src="/orders.js?v=72ffbaad" defer></script>
+    <script src="/account.js?v=bc262cb6" defer></script>
+</head>
+<body class="storefront">
+    <header class="store-header">
+        <div class="store-header-inner store-container">
+            <a class="store-brand" href="/" aria-label="StationeryStore, trang chủ">
+                <span aria-hidden="true">✎</span> StationeryStore
+            </a>
+            <form class="store-search" role="search" action="/" method="get">
+                <label class="store-visually-hidden" for="search-input">Tìm sản phẩm</label>
+                <div class="store-search-field">
+                    <input type="search" name="keyword" id="search-input" placeholder="Tìm bút, thước kẻ, sách giáo khoa…">
+                    <button type="submit">Tìm kiếm</button>
+                </div>
+            </form>
+            <nav class="store-nav" aria-label="Điều hướng chính">
+                <a href="/">Trang chủ</a>
+                <a class="store-admin-link" href="/admin.html" hidden>Quản lý sản phẩm</a>
+                <div class="store-account" data-orders-page>
+                    <a class="store-account-login" href="/login.html?next=%2Forders.html">Đăng nhập</a>
+                    <span class="store-account-name" hidden></span>
+                    <button class="store-account-logout" type="button" hidden>Đăng xuất</button>
+                    <span class="store-account-message" role="status"></span>
+                </div>
+                <a href="/orders.html" aria-current="page">Đơn mua</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container store-content orders-main">
+        <h1 id="orders-heading">Đơn mua</h1>
+        <section class="orders-panel" aria-labelledby="orders-heading">
+            <div id="orders-state" class="orders-state">
+                <p id="orders-message" role="status">Đang tải đơn mua…</p>
+                <a id="orders-login" class="store-primary-link" href="/login.html?next=%2Forders.html" hidden>Đăng nhập</a>
+                <a id="orders-shop" class="store-primary-link" href="/#products" hidden>Xem sản phẩm</a>
+                <button id="orders-retry" class="store-primary-link" type="button" hidden>Tải lại</button>
+            </div>
+            <table id="orders-table" class="orders-table" hidden>
+                <caption class="store-visually-hidden">Danh sách đơn mua của bạn</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Mã đơn</th>
+                        <th scope="col">Ngày đặt</th>
+                        <th scope="col">Tổng tiền</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-body"></tbody>
+            </table>
+        </section>
+    </main>
+    <template id="order-detail-template">
+        <div class="order-items-scroll" tabindex="0" role="region" aria-label="Các món trong đơn">
+            <table class="order-items">
+                <thead>
+                    <tr>
+                        <th scope="col">Sản phẩm</th>
+                        <th scope="col">Đơn giá</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row" colspan="3">Tổng tiền đơn</th>
+                        <td class="order-amount"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </template>
+</body>
+</html>

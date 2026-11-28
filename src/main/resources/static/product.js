@@ -234,6 +234,10 @@ buyNow.addEventListener("click", async () => {
             orderStatus.textContent = data?.message ?? "Không tạo được đơn hàng.";
         } else {
             orderStatus.textContent = data?.orderId ? `Đã đặt đơn #${data.orderId}.` : "Đã đặt hàng.";
+            const ordersLink = document.createElement("a");
+            ordersLink.href = "/orders.html";
+            ordersLink.textContent = "Xem đơn mua";
+            orderStatus.append(" ", ordersLink);
         }
     } catch (error) {
         console.error(error);

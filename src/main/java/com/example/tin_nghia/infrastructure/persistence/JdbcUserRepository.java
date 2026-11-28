@@ -40,6 +40,19 @@ public class JdbcUserRepository implements UserRepository {
         }catch (DuplicateKeyException ex){
             throw  new UserNameAlreadyExistsException();
         }
-
+    }
+    @Override
+    public Optional<User> findByUserId(int userId){
+        String sql = """
+                select UserID , UserName, PasswordHash , [Role]
+                from dbo.Users
+                where UserId = ?;
+                """;
+        return jdbcTemplate.query(sql , (rs,rowNum)->new User(
+                rs.getInt("UserId"),
+                rs.getString("UserName"),
+                rs.getString("PasswordHash"),
+                Role.valueOf(rs.getString("Role"))
+        ),userId).stream().findFirst();
     }
 }

@@ -1,6 +1,8 @@
 package com.example.tin_nghia.presentation;
 
+import com.example.tin_nghia.application.exception.UserNotFoundException;
 import com.example.tin_nghia.application.service.CreateUserService;
+import com.example.tin_nghia.application.service.GetUserService;
 import com.example.tin_nghia.application.service.LoginService;
 import com.example.tin_nghia.domain.User;
 import com.example.tin_nghia.presentation.dto.LoginRequest;
@@ -9,10 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -23,12 +22,15 @@ import java.util.Optional;
 public class AuthController {
     private final LoginService loginService;
     private final CreateUserService createUserService;
+    private final GetUserService getUserService;
     public AuthController(
             LoginService loginService,
-            CreateUserService createUserService
+            CreateUserService createUserService,
+            GetUserService getUserService
     ){
         this.loginService = loginService;
         this.createUserService = createUserService;
+        this.getUserService = getUserService;
     }
     @PostMapping("/login")
     public ResponseEntity<Map<String , Object>> login(@RequestBody LoginRequest request, HttpServletRequest httpServletRequest){
@@ -81,5 +83,31 @@ public class AuthController {
         }
         createUserService.execute(request.getUserName(),pw);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message","Đăng ký thành công!"));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<?> getUser(HttpServletRequest httpServletRequest){
+        HttpSession httpSession = httpServletRequest.getSession(false);
+        Object sessionUserId = httpSession == null ? null : httpSession.getAttribute("userId");
+        if(sessionUserId instanceof Integer userId){
+            User user;
+            try {
+                user = getUserService.execute(userId);
+            }catch (UserNotFoundException ex){
+                httpSession.invalidate();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Không còn phiên đăng nhập hợp lệ!"));
+            }
+            return ResponseEntity.ok(Map.of("userId",user.getUserId(),"userName",user.getUserName(),"role",user.getRole()));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message","Bạn chưa đăng nhập!"));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest httpServletRequest){
+        HttpSession session = httpServletRequest.getSession(false);
+        Object sessionUserId = session == null ? null : session.getAttribute("userId");
+        if(sessionUserId instanceof Integer userId){
+            session.invalidate();
+            return ResponseEntity.ok("Đăng xuất thành công!");
+        }
+        return ResponseEntity.ok("Bạn đã đăng xuất!");
     }
 }
